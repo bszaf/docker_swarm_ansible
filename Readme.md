@@ -272,3 +272,16 @@ HTTP request to any of the nodes is load-balanced. Try executing the below comma
 ```bash
 curl 192.168.50.101
 ```
+
+## Enable Calico networking in docker ##
+In some Docker Swarm environments overlay driver for networking seems not to work.
+As an option to deal with it, we can use third-party driver for creating network.
+Calico offers same possibilities as overlay network, but requires additional configuration.
+To enable it we need to create data storage container for it - etcd and run
+on each host containers in privillaged mode with mapped host network stack to container.
+Playbook `enable_calico_networks.yml` automates it. After that we can use
+calico network:
+```bash
+docker -H 192.168.50.101:4000 network create -d calico my-net
+```
+It does not require extra configuration.
