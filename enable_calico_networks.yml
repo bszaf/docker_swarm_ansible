@@ -1,0 +1,12 @@
+---
+- hosts: cluster_master
+  become: yes
+  become_method: sudo
+  roles:
+    - etcd
+
+- hosts: all_nodes
+  become: yes
+  become_method: sudo
+  roles:
+     - calico

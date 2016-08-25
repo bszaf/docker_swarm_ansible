@@ -1,0 +1,19 @@
+---
+- name: join to cluster
+  docker_container:
+    name: calico_etcd
+    image: elcolio/etcd:latest
+    command: -advertise-client-urls http://{{ consul_node01 }}:2379 -listen-client-urls http://0.0.0.0:2379
+    state: started
+    expose:
+    - 8300
+    - 8301
+    - 8302
+    ports:
+    - "2379:2379"
+    - "2380:2380"
+    - "4001:4001"
+    - "7001:7001"
+    volumes:
+      - /tmp:/data
+    timeout: 120

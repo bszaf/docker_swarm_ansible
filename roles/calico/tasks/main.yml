@@ -1,0 +1,35 @@
+---
+- name: Start Calico node
+  docker_container:
+      name: calico-node
+      hostname: "{{ ansible_hostname }}"
+      image: calico/node:latest
+      env:
+        HOSTNAME: "{{ ansible_hostname }}"
+        IP: "{{ inventory_hostname }}"
+        CALICO_NETWORKING: "true"
+        ETCD_AUTHORITY: "{{ consul_node01 }}:2379"
+        ETCD_SCHEME: http
+      volumes:
+        - "/var/run/calico:/var/run/calico"
+        - "/lib/modules:/lib/modules"
+        - "/var/log/calico:/var/log/calico"
+      state: started
+      restart_policy: always
+      network_mode: host
+      privileged: yes
+
+- name: Start Calico libnetwork
+  docker_container:
+      name: calico-libnetwork
+      hostname: "{{ ansible_hostname }}"
+      image: calico/node-libnetwork:latest
+      env:
+        HOSTNAME: "{{ ansible_hostname }}"
+        ETCD_AUTHORITY: "{{ consul_node01 }}:2379"
+        ETCD_SCHEME: http
+      volumes:
+        - "/run/docker/plugins:/run/docker/plugins"
+      state: started
+      privileged: yes
+      network_mode: host
